@@ -2,8 +2,6 @@ package GUI_COMPONENTS;
 
 import Classes.Lab_instructor;
 import Classes.Teacher;
-
-import LinkedList.SinglyList;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,14 +14,10 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 
 
 public class TeacherMenu extends Application {
-    SinglyList<Teacher> teachers = new SinglyList<Teacher>();
     Teacher teacher;
-    SinglyList<Lab_instructor> lab_instructors = new SinglyList<Lab_instructor>();
     Lab_instructor lab_instructor;
     public static void main(String[] args) {
         launch(args);
@@ -73,13 +67,9 @@ public class TeacherMenu extends Application {
         HBox MenuBtn5 = new HBox(10);
         MenuBtn5.setAlignment(Pos.CENTER);
         MenuBtn5.getChildren().add(Menu5);
-        grid2.add(MenuBtn5, 0, 3);
+        grid2.add(MenuBtn5, 0, 3 , 2,1);
 
-        Button Menu6 = new Button("Remove Lab Instructor");
-        HBox MenuBtn6 = new HBox(10);
-        MenuBtn6.setAlignment(Pos.CENTER);
-        MenuBtn6.getChildren().add(Menu6);
-        grid2.add(MenuBtn6, 1, 3);
+
 
         Button Back = new Button("Back");
         HBox Backbtn = new HBox(10);
@@ -94,52 +84,31 @@ public class TeacherMenu extends Application {
 
 
         Menu1.setOnAction(e ->{
-            TeacherFormScene teacherFormScene = new TeacherFormScene(teacher,teachers);
+            TeacherFormScene teacherFormScene = new TeacherFormScene(teacher);
             teacherFormScene.start(primaryStage);
         });
         Menu2.setOnAction(e ->{
-            ViewTeachers viewTeachers = new ViewTeachers(teachers,lab_instructors);
+            ViewTeachers viewTeachers = new ViewTeachers();
             viewTeachers.start(primaryStage);
 
         });
         Menu3.setOnAction(e ->{
-            TeacherSalaryScene teacherSalaryScene = new TeacherSalaryScene(teachers,lab_instructors);
+            TeacherSalaryScene teacherSalaryScene = new TeacherSalaryScene();
             teacherSalaryScene.start(primaryStage);
         });
 
         Menu5.setOnAction(e ->{
-            DeleteTeachers deleteTeachers = new DeleteTeachers(teachers,lab_instructors);
+            DeleteTeachers deleteTeachers = new DeleteTeachers();
             deleteTeachers.start(primaryStage);
-        });
-
-        Menu6.setOnAction(e ->{
-            DeleteLabInstructors deleteLabInstructors = new DeleteLabInstructors(teachers,lab_instructors);
-            deleteLabInstructors.start(primaryStage);
         });
 
 
         Menu4.setOnAction(e ->{
-            LabInstructorFormScene labInstructorFormScene = new LabInstructorFormScene(lab_instructor,lab_instructors);
+            LabInstructorFormScene labInstructorFormScene = new LabInstructorFormScene(lab_instructor);
             labInstructorFormScene.start(primaryStage);
         });
-        try {
-            FileInputStream fis = new FileInputStream("C:/Users/hp/Desktop/DSA LAB PROJECT/src/Classes/Teachers.ser");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            teachers = (SinglyList<Teacher>) ois.readObject();
-        }
-        catch (Exception ex){
-            System.out.println(ex);
-        }
 
 
-        try {
-            FileInputStream fis = new FileInputStream("C:/Users/hp/Desktop/DSA LAB PROJECT/src/Classes/Lab_Instructors.ser");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            lab_instructors = (SinglyList<Lab_instructor>) ois.readObject();
-        }
-        catch (Exception ex){
-            System.out.println(ex);
-        }
 
         primaryStage.setScene(TeacherMenu);
     }

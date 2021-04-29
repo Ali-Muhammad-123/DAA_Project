@@ -1,7 +1,7 @@
 package GUI_COMPONENTS;
 
+import Classes.Database;
 import Classes.Teacher;
-import LinkedList.SinglyList;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -19,38 +19,38 @@ import Classes.Student;
 
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class CourseFormScene extends Application {
 
     Student student1;
-    SinglyList<Student> students;
-    Teacher teacher;
-    SinglyList<Student> teachers;
+    ResultSet resultSet;
+    Database database = new Database();
 
-    CourseFormScene(Student student1 , SinglyList<Student> students){
+    CourseFormScene(Student student1 ){
         this.student1 = student1;
-        this.students = students;
-    }
-
-    CourseFormScene(Teacher teacher, SinglyList<Student> teachers){
-        this.teacher = teacher;
-        this.teachers = teachers;
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    public void start(Stage primaryStage) {
-        Courses courses[] = new Courses[7];
-        courses[0] = new Courses("1001", "Data Structures and Algorithims", 3);
-        courses[1] = new Courses("1002", "Data Structures and Algorithims LAB", 1);
-        courses[2] = new Courses("1003", "Computer Organization and Assembly Language", 3);
-        courses[3] = new Courses("1004", "Computer Organization and Assembly Language LAB", 1);
-        courses[4] = new Courses("1005", "Multivariate Calculus", 3);
-        courses[5] = new Courses("1006", "Professional Practices", 3);
-        courses[6] = new Courses("1007", "Discrete Mathematics", 3);
-        Courses SelectedCourses[] = new Courses[7];
+    public void start(Stage primaryStage){
+        Courses courses[] = new Courses[50];
+        int i = 0 ;
+        try {
+            resultSet = database.Get_Courses();
+
+        while (resultSet.next()){
+        courses[i] = new Courses(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3));
+        i++;
+        }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Courses SelectedCourses[] = new Courses[i];
 
         GridPane grid4 = new GridPane();
         grid4.setAlignment(Pos.CENTER);
@@ -68,22 +68,24 @@ public class CourseFormScene extends Application {
         Text Instructions = new Text("Select the courses that The student would like to opt for (max 5) :");
         grid4.add(Instructions, 0, 1);
 
-        RadioButton[] coursebuttons = new RadioButton[7];
-        coursebuttons[0] = new RadioButton("Data Structures and Algorithims");
-        coursebuttons[1] = new RadioButton("Data Structures and Algorithims LAB");
-        coursebuttons[2] = new RadioButton("Computer Organization and Assembly Language");
-        coursebuttons[3] = new RadioButton("Computer Organization and Assembly Language LAB");
-        coursebuttons[4] = new RadioButton("Multivariate Calculus");
-        coursebuttons[5] = new RadioButton("Professional Practices");
-        coursebuttons[6] = new RadioButton("Discrete Mathematics");
+        RadioButton[] coursebuttons = new RadioButton[i];
+        i=0;
+        try {
+            resultSet = database.Get_Courses();
 
-        grid4.add(coursebuttons[0], 0, 2);
-        grid4.add(coursebuttons[1], 2, 2);
-        grid4.add(coursebuttons[2], 0, 3);
-        grid4.add(coursebuttons[3], 2, 3);
-        grid4.add(coursebuttons[4], 0, 4);
-        grid4.add(coursebuttons[5], 2, 4);
-        grid4.add(coursebuttons[6], 0, 5);
+        while (resultSet.next()){
+            coursebuttons[i] = new RadioButton(resultSet.getString(2));
+            grid4.add(coursebuttons[i], 0, i+2);
+            i++;
+            if (resultSet.next()) {
+            coursebuttons[i] = new RadioButton(resultSet.getString(2));
+            grid4.add(coursebuttons[i], 2, i+2);
+            i++;}
+        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
         Button CourseSubmit = new Button("Submit");
         HBox hbCourseSubmit = new HBox(10);
@@ -92,11 +94,12 @@ public class CourseFormScene extends Application {
         grid4.add(CourseSubmit, 2, 7);
 
 
+        int finalI = i;
         CourseSubmit.setOnAction(e ->
         {
-         for (int i=0 ; i<7 ; i++){
-             if (coursebuttons[i].isSelected()){
-              SelectedCourses[i] = courses[i];
+         for (int j = 0; j< finalI; j++){
+             if (coursebuttons[j].isSelected()){
+              SelectedCourses[j] = courses[j];
              }
          }
          try{
@@ -105,11 +108,10 @@ public class CourseFormScene extends Application {
              throw ex;
          }
             try{
-                FileOutputStream fop = new FileOutputStream("C:/Users/hp/Desktop/DSA LAB PROJECT/src/Classes/Students.ser");
-                ObjectOutputStream oos = new ObjectOutputStream(fop);
-                students.insertFirst(student1);
-                oos.writeObject(students);
-
+                for (Courses Course: student1.getCourses()) {
+                    if (Course!= null)
+                    database.Insert_Courses_Students(Course.getCourse_ID(),student1.getID() );
+                }
             } catch (Exception ex) {
                 System.out.println(ex);
             }

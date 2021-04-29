@@ -1,15 +1,13 @@
 package GUI_COMPONENTS;
 
-import Classes.Lab_instructor;
-import Classes.Teacher;
-import LinkedList.SinglyList;
+import Classes.Database;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
+
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -18,18 +16,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import Classes.Student;
 
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
+import java.sql.SQLException;
 
 
 public class DeleteTeachers extends Application {
-    SinglyList<Teacher> teachers;
-    SinglyList<Lab_instructor> lab_instructors;
-    DeleteTeachers(SinglyList<Teacher> teachers , SinglyList<Lab_instructor> lab_instructors){
-        this.teachers = teachers;
-        this.lab_instructors = lab_instructors;
+    Database database = new Database();
+    DeleteTeachers(){
     }
     public static void main(String[] args) {
         launch(args);
@@ -75,21 +68,13 @@ public class DeleteTeachers extends Application {
         btn3.setOnAction(e ->
         {
             try{
-                teachers.Delete(Integer.parseInt(student_idTextField.getText()));
+                database.Delete_Teacher_Where(Integer.parseInt(student_idTextField.getText()));
             }
-            catch (Exception ex){
-                throw ex;
-            }
-            try{
-                FileOutputStream fop = new FileOutputStream("C:/Users/hp/Desktop/DSA LAB PROJECT/src/Classes/Teachers.ser");
-                ObjectOutputStream oos = new ObjectOutputStream(fop);
-                oos.writeObject(teachers);
-
-            } catch (Exception ex) {
-                System.out.println(ex);
+            catch (SQLException exc){
+                    exc.printStackTrace();
             }
 
-            ViewTeachers viewTeachers = new ViewTeachers(teachers, lab_instructors);
+            ViewTeachers viewTeachers = new ViewTeachers();
             viewTeachers.start(primaryStage);
         } );
 

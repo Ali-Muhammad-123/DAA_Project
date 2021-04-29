@@ -1,8 +1,7 @@
 package GUI_COMPONENTS;
 
-import Classes.Lab_instructor;
-import Classes.Teacher;
-import LinkedList.SinglyList;
+import Classes.Courses;
+import Classes.Database;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -20,17 +19,13 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import Classes.Student;
 
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
+import java.sql.SQLException;
 
 
-public class DeleteLabInstructors extends Application {
-    SinglyList<Teacher> teachers;
-    SinglyList<Lab_instructor> lab_instructors;
-    DeleteLabInstructors(SinglyList<Teacher> teachers , SinglyList<Lab_instructor> lab_instructors){
-        this.teachers = teachers;
-        this.lab_instructors = lab_instructors;
-    }
+public class Add_Course extends Application {
+    Courses courses = new Courses();
+    Database database = new Database();
+    Add_Course(){ }
     public static void main(String[] args) {
         launch(args);
     }
@@ -43,16 +38,27 @@ public class DeleteLabInstructors extends Application {
         grid1.setPadding(new Insets(25, 25, 25, 25));
 
 
-        Scene teacherinfo = new Scene(grid1, 700, 600);
-        Text teacherinfotitle = new Text("Remove Lab Instructors");
-        teacherinfotitle.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
+        Scene studentinfo = new Scene(grid1, 700, 600);
+        Text studentinfotitle = new Text("Course Form");
+        studentinfotitle.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
         grid1.setAlignment(Pos.TOP_CENTER);
-        grid1.add(teacherinfotitle, 0, 0, 2, 1);
+        grid1.add(studentinfotitle, 0, 0, 2, 1);
 
-        Label student_id = new Label("Lab Instructor ID:");
+        Label student_id = new Label("Course ID:");
         grid1.add(student_id, 0, 1);
         TextField student_idTextField = new TextField();
         grid1.add(student_idTextField, 1, 1);
+
+        Label studentName = new Label("Course Name:");
+        grid1.add(studentName, 0, 2);
+
+        TextField studentNameTextField = new TextField();
+        grid1.add(studentNameTextField, 1, 2);
+
+        Label Credit_Hours = new Label("Credit Hours:");
+        grid1.add(Credit_Hours, 0, 3);
+        TextField Credit_HoursTextField = new TextField();
+        grid1.add(Credit_HoursTextField, 1, 3);
 
 
         Button Back = new Button("Back");
@@ -71,27 +77,20 @@ public class DeleteLabInstructors extends Application {
         HBox hbBtn3 = new HBox(10);
         hbBtn3.setAlignment(Pos.BOTTOM_RIGHT);
         hbBtn3.getChildren().add(btn3);
-        grid1.add(hbBtn3, 1, 8);
+        grid1.add(hbBtn3, 2, 7);
         btn3.setOnAction(e ->
         {
-            try{
-                lab_instructors.Delete(Integer.parseInt(student_idTextField.getText()));
-            }
-            catch (Exception ex){
-                throw ex;
-            }
-            try{
-                FileOutputStream fop = new FileOutputStream("C:/Users/hp/Desktop/DSA LAB PROJECT/src/Classes/Lab_Instructors.ser");
-                ObjectOutputStream oos = new ObjectOutputStream(fop);
-                oos.writeObject(lab_instructors);
+            courses = new Courses(Integer.parseInt(student_idTextField.getText()),studentNameTextField.getText() , Integer.parseInt(Credit_HoursTextField.getText()));
 
-            } catch (Exception ex) {
-                System.out.println(ex);
+            try {
+                database.Insert_Course(courses.getCourse_ID(),courses.getCourse_Name(),courses.getCredit_Hours());
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
 
-            ViewTeachers viewTeachers = new ViewTeachers(teachers, lab_instructors);
-            viewTeachers.start(primaryStage);
+            MainMenuScene mainMenuScene = new MainMenuScene();
+            mainMenuScene.start(primaryStage);
         } );
 
-        primaryStage.setScene(teacherinfo);
+        primaryStage.setScene(studentinfo);
     }}

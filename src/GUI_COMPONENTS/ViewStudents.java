@@ -1,7 +1,6 @@
 package GUI_COMPONENTS;
 
-import LinkedList.Node;
-import LinkedList.SinglyList;
+import Classes.Database;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,18 +13,14 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import Classes.Student;
-
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
+import java.sql.ResultSet;
 
 public class ViewStudents extends Application  {
-    SinglyList<Student> students;
+    Database database = new Database();
+    ResultSet resultSet1 , resultSet2 , resultSet3;
     int counter=0;
     int rowcounter=2;
-    ViewStudents( SinglyList<Student> students){
-        this.students = students;
-    }
+    ViewStudents( ){    }
 
     public static void main(String[] args) {
         launch(args);
@@ -98,39 +93,35 @@ public class ViewStudents extends Application  {
 
 
             try {
-                FileInputStream fis = new FileInputStream("C:/Users/hp/Desktop/DSA LAB PROJECT/src/Classes/Students.ser");
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                students = (SinglyList<Student>)ois.readObject();
-                students.sortList();
+                resultSet1 = database.Get_Students();
                 Text[] fields = new Text[100];
-                Node<Student> node = students.getFirst();
-                while (node !=null) {
-                    fields[counter] = new Text(String.valueOf(node.getData().getID()));
+                while (resultSet1.next()) {
+                    fields[counter] = new Text(resultSet1.getString(1));
                     grid3.add(fields[counter], 0, ++rowcounter);
                     counter++;
-                    fields[counter] = new Text(node.getData().getName());
+                    fields[counter] = new Text(resultSet1.getString(2));
                     grid3.add(fields[counter], 1, rowcounter);
                     counter++;
-                    fields[counter] = new Text(node.getData().getGender());
+                    fields[counter] = new Text(resultSet1.getString(3));
                     grid3.add(fields[counter], 2, rowcounter);
                     counter++;
-                    fields[counter] = new Text(String.valueOf(node.getData().getAge()));
+                    fields[counter] = new Text(resultSet1.getString(4));
                     grid3.add(fields[counter], 3, rowcounter);
                     counter++;
-                    fields[counter] = new Text(node.getData().getSemester());
+                    fields[counter] = new Text(resultSet1.getString(5));
                     grid3.add(fields[counter], 4, rowcounter);
                     counter++;
-                    fields[counter] = new Text(node.getData().getProgramme());
+                    fields[counter] = new Text(resultSet1.getString(6));
                     grid3.add(fields[counter], 5, rowcounter);
                     counter++;
-                    for (int j=0 ; j<node.getData().getCourses().length; j++){
-                        if (node.getData().getCourses()[j] != null) {
-                            fields[counter] = new Text(node.getData().getCourses()[j].getCourse_Name());
+                    resultSet2 = database.Get_StudentsCourses_Where(resultSet1.getInt(1));
+                    while (resultSet2.next()){
+                        resultSet3 = database.Get_Courses_Where(resultSet2.getInt(1));
+                        resultSet3.next();
+                            fields[counter] = new Text(resultSet3.getString(2));
                             grid3.add(fields[counter], 6, rowcounter++);
                             counter++;
-                        }
                     }
-                    node = node.next;
                 }
 
             } catch (Exception exep) {

@@ -1,6 +1,5 @@
 package GUI_COMPONENTS;
 
-        import LinkedList.SinglyList;
         import javafx.application.Application;
         import javafx.collections.FXCollections;
         import javafx.geometry.Insets;
@@ -18,13 +17,13 @@ package GUI_COMPONENTS;
         import javafx.stage.Stage;
         import Classes.*;
 
-public class LabInstructorFormScene extends Application {
+        import java.sql.SQLException;
 
+public class LabInstructorFormScene extends Application {
+    Database database = new Database();
     Lab_instructor lab_instructor;
-    SinglyList<Lab_instructor> lab_instructors;
-    LabInstructorFormScene(Lab_instructor lab_instructor,SinglyList<Lab_instructor> lab_instructors){
+    LabInstructorFormScene(Lab_instructor lab_instructor){
         this.lab_instructor = lab_instructor;
-        this.lab_instructors = lab_instructors;
     }
     public static void main(String[] args) {
         launch(args);
@@ -103,8 +102,13 @@ public class LabInstructorFormScene extends Application {
             catch (Exception ex){
                 throw ex;
             }
+            try {
+                database.Insert_Teacher(lab_instructor.getID(),lab_instructor.getName(),lab_instructor.getGender(),lab_instructor.getAge(),lab_instructor.getQualification() , "TRUE");
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
 
-            CourseFormScene3 courseFormScene = new CourseFormScene3(lab_instructor,lab_instructors);
+            CourseFormScene3 courseFormScene = new CourseFormScene3();
             courseFormScene.start(primaryStage);
         } );
 

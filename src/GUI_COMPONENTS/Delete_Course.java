@@ -1,13 +1,10 @@
 package GUI_COMPONENTS;
 
 import Classes.Database;
-import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -16,15 +13,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import Classes.Student;
 
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
+import static javafx.application.Application.launch;
 
+public class Delete_Course {
 
-public class DeleteStudents extends Application {
-   Database database = new Database();
-    DeleteStudents(){ }
+    Database database = new Database();
+    Delete_Course(){ }
     public static void main(String[] args) {
         launch(args);
     }
@@ -38,12 +33,12 @@ public class DeleteStudents extends Application {
 
 
         Scene studentinfo = new Scene(grid1, 700, 600);
-        Text studentinfotitle = new Text("Remove Students");
+        Text studentinfotitle = new Text("Delete Courses");
         studentinfotitle.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
         grid1.setAlignment(Pos.TOP_CENTER);
         grid1.add(studentinfotitle, 0, 0, 2, 1);
 
-        Label student_id = new Label("Student ID:");
+        Label student_id = new Label("Course ID:");
         grid1.add(student_id, 0, 1);
         TextField student_idTextField = new TextField();
         grid1.add(student_idTextField, 1, 1);
@@ -56,8 +51,8 @@ public class DeleteStudents extends Application {
         grid1.add(Backbtn, 0, 8);
 
         Back.setOnAction(e ->
-        { StudentMenu studentMenu = new StudentMenu();
-            studentMenu.start(primaryStage);
+        { CourseMenu courseMenu = new CourseMenu();
+            courseMenu.start(primaryStage);
         });
 
 
@@ -69,15 +64,18 @@ public class DeleteStudents extends Application {
         btn3.setOnAction(e ->
         {
             try{
-                database.Delete_Student_Where(Integer.parseInt(student_idTextField.getText()));
+                database.Delete_Course_Where(Integer.parseInt(student_idTextField.getText()));
             }
             catch (Exception ex){
                 ex.printStackTrace();
             }
 
-            ViewStudents viewStudents = new ViewStudents();
-            viewStudents.start(primaryStage);
+            CourseMenu courseMenu = new CourseMenu();
+            courseMenu.start(primaryStage);
+
         } );
 
         primaryStage.setScene(studentinfo);
-    }}
+    }
+
+}

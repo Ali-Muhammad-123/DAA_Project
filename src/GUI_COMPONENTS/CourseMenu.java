@@ -1,5 +1,7 @@
 package GUI_COMPONENTS;
 
+import Classes.Courses;
+import Classes.Database;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,64 +14,51 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import Classes.Student;
 
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
 
-public class StudentMenu extends Application {
+public class CourseMenu extends Application {
 
-    Student student1;
-
+    CourseMenu(){ }
     public static void main(String[] args) {
         launch(args);
     }
 
-    public void start(Stage primaryStage) {
-
-
+    public void start(Stage primaryStage)  {
         GridPane grid2 = new GridPane();
         grid2.setAlignment(Pos.CENTER);
         grid2.setHgap(10);
         grid2.setVgap(10);
         grid2.setPadding(new Insets(25, 25, 25, 25));
 
-        Scene StudentMenu = new Scene(grid2, 600, 550);
-        Text MenuTitle = new Text("Student Menu");
+        Scene MainMenuScene = new Scene(grid2, 600, 550);
+        Text MenuTitle = new Text("Main Menu");
         MenuTitle.setFont(Font.font("Verdana", FontWeight.NORMAL, 20));
         MenuTitle.setTextAlignment(TextAlignment.CENTER);
         grid2.add(MenuTitle, 0, 0, 2, 1);
 
-        Button Menu1 = new Button("Register New Student");
+        Button Menu1 = new Button("Add Course");
         HBox MenuBtn1 = new HBox(10);
         MenuBtn1.setAlignment(Pos.CENTER);
         MenuBtn1.getChildren().add(Menu1);
         grid2.add(MenuBtn1, 0, 1);
 
-        Button Menu2 = new Button("View Student's info");
+        Button Menu2 = new Button("Delete Course");
         HBox MenuBtn2 = new HBox(10);
         MenuBtn2.setAlignment(Pos.CENTER);
         MenuBtn2.getChildren().add(Menu2);
         grid2.add(MenuBtn2, 1, 1);
 
-        Button Menu3 = new Button("Generate Fees");
+        Button Menu3 = new Button("View Courses");
         HBox MenuBtn3 = new HBox(10);
         MenuBtn3.setAlignment(Pos.CENTER);
         MenuBtn3.getChildren().add(Menu3);
-        grid2.add(MenuBtn3, 0, 2 );
-
-        Button Menu4 = new Button("Remove Student");
-        HBox MenuBtn4 = new HBox(10);
-        MenuBtn4.setAlignment(Pos.CENTER);
-        MenuBtn4.getChildren().add(Menu4);
-        grid2.add(MenuBtn4, 1, 2);
-
+        grid2.add(MenuBtn3, 0, 2,2,1);
 
         Button Back = new Button("Back");
         HBox Backbtn = new HBox(10);
         Backbtn.setAlignment(Pos.CENTER);
         Backbtn.getChildren().add(Back);
-        grid2.add(Backbtn, 0, 3 , 2 ,2);
+        grid2.add(Backbtn, 0, 4 , 2 ,2);
 
         Back.setOnAction(e ->
         { MainMenuScene mainMenuScene = new MainMenuScene();
@@ -77,28 +66,21 @@ public class StudentMenu extends Application {
         });
 
 
+
         Menu1.setOnAction(e ->{
-            StudentFormScene studentformscene = new StudentFormScene(student1);
-            studentformscene.start(primaryStage);
+            Add_Course add_course = new Add_Course();
+            add_course.start(primaryStage);
         });
         Menu2.setOnAction(e ->{
-            ViewStudents viewstudents = new ViewStudents();
-            viewstudents.start(primaryStage);
-
+            Delete_Course delete_course = new Delete_Course();
+            delete_course.start(primaryStage);
         });
+
         Menu3.setOnAction(e ->{
-            StudentFeeScene studentFeeScene = new StudentFeeScene();
-            studentFeeScene.start(primaryStage);
-
-        });
-
-        Menu4.setOnAction(e ->{
-            DeleteStudents deleteStudents = new DeleteStudents();
-            deleteStudents.start(primaryStage);
-
+            ViewCourses viewCourses = new ViewCourses();
+            viewCourses.start(primaryStage);
         });
 
 
-        primaryStage.setScene(StudentMenu);
-    }
-}
+        primaryStage.setScene(MainMenuScene);
+    }}

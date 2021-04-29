@@ -1,12 +1,9 @@
 package GUI_COMPONENTS;
 
-import Classes.Lab_instructor;
+import Classes.Database;
 import Classes.Salary;
-import Classes.Teacher;
 
 
-import LinkedList.Node;
-import LinkedList.SinglyList;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,18 +19,15 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+import java.sql.ResultSet;
+
 public class TeacherSalaryScene extends Application {
-
-    SinglyList<Teacher> teachers;
-
-    SinglyList<Lab_instructor> lab_instructors;
+ResultSet resultSet;
+Database database = new Database();
     int counter=0;
     int rowcounter=2;
     Salary salary = new Salary();
-    TeacherSalaryScene( SinglyList<Teacher> teachers ,SinglyList<Lab_instructor> lab_instructors){
-        this.teachers = teachers;
-        this.lab_instructors  =lab_instructors;
-    }
+    TeacherSalaryScene(){ }
 
 
     public static void main(String[] args) {
@@ -87,60 +81,26 @@ public class TeacherSalaryScene extends Application {
         });
 
         try {
-            FileInputStream fis = new FileInputStream("C:/Users/hp/Desktop/DSA LAB PROJECT/src/Classes/Lab_Instructors.ser");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            lab_instructors = (SinglyList<Lab_instructor>)ois.readObject();
-            lab_instructors.sortList();
+            resultSet = database.Get_Teachers();
             Text[] fields = new Text[100];
-            Node<Lab_instructor> node = lab_instructors.getFirst();
-            while (node !=null) {
-                fields[counter] = new Text(String.valueOf(node.getData().getID()));
+            while (resultSet.next()) {
+                fields[counter] = new Text(resultSet.getString(1));
                 grid3.add(fields[counter], 0, ++rowcounter);
                 counter++;
-                fields[counter] = new Text(node.getData().getName());
+                fields[counter] = new Text(resultSet.getString(2));
                 grid3.add(fields[counter], 1, rowcounter);
                 counter++;
-                fields[counter] = new Text(String.valueOf(salary.getNet_amount(node.getData())));
+                fields[counter] = new Text(String.valueOf(salary.getNet_amount(database.Get_NumberOfCoursesTeachers_Where(resultSet.getInt(1)))));
                 grid3.add(fields[counter], 2, rowcounter);
                 counter++;
-                fields[counter] = new Text(String.valueOf(salary.getGross_amount(node.getData())));
+                fields[counter] = new Text(String.valueOf(salary.getGross_amount(database.Get_NumberOfCoursesTeachers_Where(resultSet.getInt(1)))));
                 grid3.add(fields[counter], 3, rowcounter);
                 counter++;
-                node = node.next;
             }
 
         } catch (Exception exep) {
             System.out.println(exep);
         }
-        try {
-            FileInputStream fis = new FileInputStream("C:/Users/hp/Desktop/DSA LAB PROJECT/src/Classes/Teachers.ser");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            teachers = (SinglyList<Teacher>)ois.readObject();
-            teachers.sortList();
-            Text[] fields = new Text[100];
-            Node<Teacher> node = teachers.getFirst();
-
-            while (node !=null) {
-                fields[counter] = new Text(String.valueOf(node.getData().getID()));
-                grid3.add(fields[counter], 0, ++rowcounter);
-                counter++;
-                fields[counter] = new Text(node.getData().getName());
-                grid3.add(fields[counter], 1, rowcounter);
-                counter++;
-                fields[counter] = new Text(String.valueOf(salary.getNet_amount(node.getData())));
-                grid3.add(fields[counter], 2, rowcounter);
-                counter++;
-                fields[counter] = new Text(String.valueOf(salary.getGross_amount(node.getData())));
-                grid3.add(fields[counter], 3, rowcounter);
-                counter++;
-                node = node.next;
-            }
-
-        } catch (Exception exep) {
-            System.out.println(exep);
-        }
-
-
 
         primaryStage.setScene(StudentFeeScene);
 

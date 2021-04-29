@@ -47,6 +47,12 @@ public class MainMenuScene extends Application {
         MenuBtn2.getChildren().add(Menu2);
         grid2.add(MenuBtn2, 1, 1);
 
+        Button Menu3 = new Button("Course Menu");
+        HBox MenuBtn3 = new HBox(10);
+        MenuBtn3.setAlignment(Pos.CENTER);
+        MenuBtn3.getChildren().add(Menu3);
+        grid2.add(MenuBtn3, 0, 2,2,1);
+
 
         Menu1.setOnAction(e ->{
             StudentMenu studentMenu = new StudentMenu();
@@ -55,7 +61,11 @@ public class MainMenuScene extends Application {
         Menu2.setOnAction(e ->{
            TeacherMenu teacherMenu = new TeacherMenu();
            teacherMenu.start(primaryStage);
+        });
 
+        Menu3.setOnAction(e ->{
+            CourseMenu courseMenu = new CourseMenu();
+            courseMenu.start(primaryStage);
         });
 
         primaryStage.setScene(MainMenuScene);
